@@ -4,6 +4,8 @@
 # Build output
 /out/
 /dist/
+/build/
+/build-test/
 
 # Custom configuration
 /::override.properties
