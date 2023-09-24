@@ -76,7 +76,8 @@ public class MyApplication implements FredPlugin, FredPluginThreadless, FredPlug
         // }
         
         // finally add toadlets which have been registered within the menu to our list
-        newToadlets.add(oc);
+        //newToadlets.add(oc);
+        System.out.println("Sending probe");
         pluginRespirator.getNode().startProbe((byte)20, pluginRespirator.getNode().random.nextLong(), Type.IDENTIFIER, new Listener() {
             @Override
             public void onError(Error error, Byte code, boolean local) {
@@ -138,6 +139,7 @@ public class MyApplication implements FredPlugin, FredPluginThreadless, FredPlug
                         bandwidthClassForCapacityUsage);
             }
         });
+        System.out.println("Probe sent");
     }
 }
 
