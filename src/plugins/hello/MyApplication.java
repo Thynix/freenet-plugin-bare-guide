@@ -1,22 +1,14 @@
 package plugins.hello.world;
 
-import java.io.IOException;
-import java.net.URI;
-
-import freenet.client.HighLevelSimpleClient;
-import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContainer;
-import freenet.clients.http.ToadletContext;
-import freenet.clients.http.ToadletContextClosedException;
 import freenet.l10n.BaseL10n.LANGUAGE;
+import freenet.node.probe.Error;
+import freenet.node.probe.Listener;
+import freenet.node.probe.Type;
 import freenet.pluginmanager.*;
 import freenet.support.Logger;
-import freenet.support.api.HTTPRequest;
 import freenet.support.plugins.helpers1.PluginContext;
 import freenet.support.plugins.helpers1.WebInterface;
-
-import plugins.hello.Overview;
-
 
 public class MyApplication implements FredPlugin, FredPluginThreadless, FredPluginL10n {
     private PluginRespirator pluginRespirator;
@@ -69,7 +61,7 @@ public class MyApplication implements FredPlugin, FredPluginThreadless, FredPlug
         
         // pages
         oc = new Overview(pluginRespirator.getHLSimpleClient(), basePath, "");
-        
+
         // create fproxy menu items
         String menuName = "MyApplication";
         pluginRespirator.getPageMaker().addNavigationCategory(basePath, menuName, menuName, this);
@@ -84,7 +76,68 @@ public class MyApplication implements FredPlugin, FredPluginThreadless, FredPlug
         // }
         
         // finally add toadlets which have been registered within the menu to our list
-        // newToadlets.add(oc);
+        newToadlets.add(oc);
+        pluginRespirator.getNode().startProbe((byte)20, pluginRespirator.getNode().random.nextLong(), Type.IDENTIFIER, new Listener() {
+            @Override
+            public void onError(Error error, Byte code, boolean local) {
+                System.out.println("Probe error code: " + error.code + (local ? " local" : " remote"));
+            }
+
+            @Override
+            public void onRefused() {
+                System.out.println("Probe refused");
+            }
+
+            @Override
+            public void onOutputBandwidth(float outputBandwidth) {
+                System.out.println("Probe bandwidth: " + outputBandwidth);
+            }
+
+            @Override
+            public void onBuild(int build) {
+                System.out.println("Probe build: " + build);
+            }
+
+            @Override
+            public void onIdentifier(long probeIdentifier, byte percentageUptime) {
+                System.out.println("Probe identifier: " + probeIdentifier + " with uptime " + percentageUptime);
+            }
+
+            @Override
+            public void onLinkLengths(float[] linkLengths) {
+                System.out.println("Probe got link lengths: " + linkLengths.length);
+            }
+
+            @Override
+            public void onLocation(float location) {
+                System.out.println("Probe got link lengths: " + location);
+            }
+
+            @Override
+            public void onStoreSize(float storeSize) {
+                System.out.println("Probe got link lengths: " + storeSize);
+            }
+
+            @Override
+            public void onUptime(float uptimePercent) {
+                System.out.println("Probe got uptime percent: " + uptimePercent);
+            }
+
+            @Override
+            public void onRejectStats(byte[] stats) {
+                System.out.println("Probe got reject stats: " +
+                        "CHK request " + stats[0] + " | " +
+                        "SSK request " + stats[1] + " | " +
+                        "CHK insert " + stats[2] + " | " +
+                        "SSK insert " + stats[3]);
+            }
+
+            @Override
+            public void onOverallBulkOutputCapacity(byte bandwidthClassForCapacityUsage, float capacityUsage) {
+                System.out.println("Probe got " + capacityUsage + " for bandwidth class " +
+                        bandwidthClassForCapacityUsage);
+            }
+        });
     }
 }
 

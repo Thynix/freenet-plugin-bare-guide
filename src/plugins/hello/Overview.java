@@ -1,12 +1,12 @@
-package plugins.hello;
+package plugins.hello.world;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Random;
 
 import freenet.client.HighLevelSimpleClient;
 import freenet.clients.http.LinkEnabledCallback;
 import freenet.clients.http.Toadlet;
-import freenet.clients.http.ToadletContainer;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.api.HTTPRequest;
